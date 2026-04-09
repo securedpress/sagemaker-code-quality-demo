@@ -166,14 +166,12 @@ and compliance delivered end to end.
 
 <div align="center">
   <a href="https://securedpress.com" target="_blank">
-    <img src="dashboard/img/securedpress_logo.png" alt="SecuredPress" width="48" height="48" style="border-radius:50%;vertical-align:middle;" />
-    &nbsp;&nbsp;
-    <span style="font-size:18px;font-weight:700;vertical-align:middle;">
-      SecuredPress ™
-    </span>
+    <img src="dashboard/img/securedpress_logo.png" alt="SecuredPress" width="52" height="52" />
   </a>
-  <br><br>
-  <sub><b>Empowering Security with Intelligence ™</b></sub>
+  <br>
+  <strong>SecuredPress ™</strong>
+  <br>
+  <em>Empowering Security with Intelligence ™</em>
   <br>
   <a href="https://securedpress.com">securedpress.com</a>
 </div>
