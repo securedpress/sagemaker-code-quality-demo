@@ -59,6 +59,13 @@ sagemaker-code-quality-demo/
 
 ---
 
+## Dashboard Preview
+
+<div align="center">
+  <img src="docs/report-preview.png" alt="SecuredPress Code Quality Report" width="900" />
+</div>
+
+---
 ## Prerequisites
 
 | Requirement | Version | Notes |
@@ -151,10 +158,9 @@ quality   → summary gate — passes only when all three above pass
 
 ## About SecuredPress
 
-SecuredPress delivers production-ready SageMaker infrastructure — infrastructure
-as code, security scanning, and code quality pipelines included.
+SecuredPress builds and governs AI/ML systems — code quality, cost, security,
+and compliance delivered end to end.
 
-**The ML Governance Layer Between AI Teams and AWS**
+**Empowering Security with Intelligence ™**
 
-Book a free 15-minute scoping call →
-[calendly.com/jose-perez-securedpress/sagemaker-scoping](https://calendly.com/jose-perez-securedpress/sagemaker-scoping)
+[securedpress.com](https://securedpress.com)
