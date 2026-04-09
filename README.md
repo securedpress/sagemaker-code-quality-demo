@@ -66,6 +66,7 @@ sagemaker-code-quality-demo/
 </div>
 
 ---
+
 ## Prerequisites
 
 | Requirement | Version | Notes |
@@ -161,6 +162,18 @@ quality   → summary gate — passes only when all three above pass
 SecuredPress builds and governs AI/ML systems — code quality, cost, security,
 and compliance delivered end to end.
 
-**Empowering Security with Intelligence ™**
+<br>
 
-[securedpress.com](https://securedpress.com)
+<div align="center">
+  <a href="https://securedpress.com" target="_blank">
+    <img src="dashboard/img/securedpress_logo.png" alt="SecuredPress" width="48" height="48" style="border-radius:50%;vertical-align:middle;" />
+    &nbsp;&nbsp;
+    <span style="font-size:18px;font-weight:700;vertical-align:middle;">
+      SecuredPress ™
+    </span>
+  </a>
+  <br><br>
+  <sub><b>Empowering Security with Intelligence ™</b></sub>
+  <br>
+  <a href="https://securedpress.com">securedpress.com</a>
+</div>
