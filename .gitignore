@@ -1,0 +1,25 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv
+venv/
+
+# mypy
+.mypy_cache/
+
+# pre-commit
+.pre-commit-cache/
+
+# generated report output — run scripts/generate_report.py to recreate
+reports/
+
+# editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macos
+.DS_Store

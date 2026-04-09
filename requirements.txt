@@ -1,0 +1,21 @@
+# sagemaker-code-quality-demo
+# Install all dependencies before running the demo:
+#   pip install -r requirements.txt
+
+# --- static analysis tools ---
+bandit==1.7.8          # security vulnerability scanner
+flake8==7.0.0          # style and syntax linting
+mypy==1.9.0            # static type checking
+isort==5.13.2          # import ordering
+black==24.3.0          # code formatting
+
+# --- pre-commit ---
+pre-commit==3.7.0      # runs all tools as git hooks before commit
+
+# --- type stubs ---
+pandas-stubs>=2.2.2    # type annotations for pandas (Python 3.12 compatible)
+types-PyYAML==6.0.12   # type annotations for PyYAML
+
+# --- runtime dependencies ---
+pandas==2.2.1          # data manipulation
+numpy==1.26.4          # numerical computing
