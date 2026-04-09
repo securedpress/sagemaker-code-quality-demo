@@ -1,4 +1,4 @@
-# sagemaker-code-quality-demo
+# Sagemaker Code Quality Demo
 
 A demonstration of automated code quality and security scanning for SageMaker
 ML pipelines — showing how static analysis tools catch real vulnerabilities in
