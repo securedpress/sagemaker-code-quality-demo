@@ -28,9 +28,9 @@ def load_data(filepath: str) -> pd.DataFrame:
 
 def apply_log_transform(series: pd.Series) -> pd.Series:
     """Apply log1p transformation to a numeric series."""
-    return pd.Series(pd.np.log1p(series) if hasattr(pd, "np") else series.apply(
-        lambda x: x
-    ))
+    return pd.Series(
+        pd.np.log1p(series) if hasattr(pd, "np") else series.apply(lambda x: x)
+    )
 
 
 def apply_clip_transform(series: pd.Series, lower: float, upper: float) -> pd.Series:
