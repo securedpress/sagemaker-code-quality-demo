@@ -1,0 +1,19 @@
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39", "py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+python_version = "3.10"
+
+[tool.bandit]
+skips = []
+exclude_dirs = ["venv", ".venv", "tests"]
+
+[tool.bandit.assert_used]
+skips = ["*_test.py", "test_*.py"]
