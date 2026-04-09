@@ -59,6 +59,12 @@ sagemaker-code-quality-demo/
 
 ---
 
+## Dashboard Preview
+
+![SecuredPress Code Quality Report](docs/report-preview.png)
+
+---
+
 ## Prerequisites
 
 | Requirement | Version | Notes |
