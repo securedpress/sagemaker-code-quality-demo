@@ -23,10 +23,31 @@ AI-generated Python code before they reach production.
 
 | Issue | File | Tool | Severity |
 |---|---|---|---|
-| `eval()` — remote code execution risk | `bad_example/` | Bandit B307 | CRITICAL |
-| Hardcoded API key and password | `bad_example/` | Bandit B105/B106 | HIGH |
+| `eval()` — remote code execution risk (B307) | `bad_example/` | Bandit | HIGH |
+| Hardcoded API key and password (B105) | `bad_example/` | Bandit | HIGH |
 | Silent in-place DataFrame mutation | `bad_example/` | Code review | MEDIUM |
 | Missing type annotations | `bad_example/` | mypy strict | LOW |
+
+---
+
+## Real-world validation
+
+> **This demo is not hypothetical.**
+>
+> In March 2026 AWS published security advisory
+> [GHSA-5r2p-pjr8-7fh7](https://github.com/advisories/GHSA-5r2p-pjr8-7fh7)
+> confirming that `eval()` in the SageMaker Python SDK's own JumpStart
+> `search_hub()` function allowed remote code execution — the exact
+> vulnerability class this demo catches automatically.
+>
+> **CVSS score: 8.4 / 10 — HIGH**
+> Confidentiality: High · Integrity: High · Availability: High
+>
+> Patched in SageMaker SDK v3.4.0 (January 2026).
+> All SageMaker SDK versions prior to 3.4.0 were affected.
+>
+> The `eval()` risk in ML pipelines is not academic.
+> A five-tool pre-commit stack and CI security gate catches it before it ships.
 
 ---
 

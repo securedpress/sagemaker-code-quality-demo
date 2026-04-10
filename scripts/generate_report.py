@@ -20,12 +20,12 @@ import webbrowser
 from datetime import datetime
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).parent.parent
-BAD_EXAMPLE = REPO_ROOT / "bad_example" / "feature_engineering_ai.py"
+REPO_ROOT    = Path(__file__).parent.parent
+BAD_EXAMPLE  = REPO_ROOT / "bad_example" / "feature_engineering_ai.py"
 GOOD_EXAMPLE = REPO_ROOT / "good_example" / "feature_engineering_fixed.py"
-REPORTS_DIR = REPO_ROOT / "reports"
-OUTPUT_HTML = REPORTS_DIR / "findings_report.html"
-LOGO_PATH = REPO_ROOT / "dashboard" / "img" / "securedpress_logo.png"
+REPORTS_DIR  = REPO_ROOT / "reports"
+OUTPUT_HTML  = REPORTS_DIR / "findings_report.html"
+LOGO_PATH    = REPO_ROOT / "dashboard" / "img" / "securedpress_logo.png"
 
 
 def load_logo_b64() -> str:
@@ -37,31 +37,44 @@ def load_logo_b64() -> str:
     except FileNotFoundError:
         return ""
 
-
 SEVERITY_COLOR = {
     "CRITICAL": "#FF4560",
-    "HIGH": "#FF4560",
-    "MEDIUM": "#FFB300",
-    "LOW": "#00E5FF",
-    "UNDEFINED": "#8890A0",
+    "HIGH":     "#FF4560",
+    "MEDIUM":   "#FFB300",
+    "LOW":      "#00E5FF",
+    "UNDEFINED":"#8890A0",
 }
 
 SEVERITY_RANK = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3, "UNDEFINED": 4}
 
 RECOMMENDATIONS = {
     "B307": {
-        "title": "Replace eval() with ast.literal_eval() or explicit logic",
+        "title":  "Replace eval() with ast.literal_eval() or explicit logic",
         "detail": (
             "eval() executes arbitrary Python expressions from a string input. "
             "In a production ML pipeline that processes external data, this is a "
-            "remote code execution risk. Replace with ast.literal_eval() for "
+            "remote code execution risk (RCE). Replace with ast.literal_eval() for "
             "safe literal parsing, or refactor to use explicit typed transformation "
-            "functions that do not accept string expressions."
+            "functions that do not accept string expressions. "
+            "<br><br>"
+            "This is the same approach AWS used when patching "
+            "<a href='https://github.com/advisories/GHSA-5r2p-pjr8-7fh7' "
+            "target='_blank' style='color:#199F86;'>GHSA-5r2p-pjr8-7fh7</a> "
+            "in the SageMaker Python SDK — they replaced eval() with a safe "
+            "recursive descent parser. Apply the same pattern to your own "
+            "pipeline code. "
+            "<br><br>"
+            "<strong style='color:#FF4560;'>Real-world validation:</strong> "
+            "AWS published security advisory GHSA-5r2p-pjr8-7fh7 (March 2026) "
+            "confirming this exact vulnerability class in the SageMaker Python SDK "
+            "itself — eval() in the JumpStart search_hub() function allowed remote "
+            "code execution. Patched in SageMaker SDK v3.4.0 (January 2026). "
+            "CVSS score: 8.4/10 HIGH. "
         ),
         "fix": "from ast import literal_eval\nresult = literal_eval(transform_expr)",
     },
     "B105": {
-        "title": "Load secrets from environment variables",
+        "title":  "Load secrets from environment variables",
         "detail": (
             "Hardcoded passwords and API keys in source code are exposed in version "
             "control history permanently — even after deletion. Load all secrets "
@@ -72,7 +85,7 @@ RECOMMENDATIONS = {
         "fix": "import os\nAPI_KEY = os.environ.get('API_KEY', '')\nDB_PASSWORD = os.environ.get('DB_PASSWORD', '')",
     },
     "B106": {
-        "title": "Load secrets from environment variables",
+        "title":  "Load secrets from environment variables",
         "detail": (
             "Same as B105 — hardcoded credentials must be moved to environment "
             "variables or a secrets manager."
@@ -80,7 +93,7 @@ RECOMMENDATIONS = {
         "fix": "import os\nSECRET = os.environ.get('SECRET_KEY', '')",
     },
     "MUTATION": {
-        "title": "Use .copy() to avoid silent DataFrame mutation",
+        "title":  "Use .copy() to avoid silent DataFrame mutation",
         "detail": (
             "Modifying a DataFrame in-place without .copy() silently mutates the "
             "caller's data, producing incorrect results with no error or warning. "
@@ -91,7 +104,7 @@ RECOMMENDATIONS = {
         "fix": "def compute_balance_ratio(df: pd.DataFrame) -> pd.DataFrame:\n    result = df.copy()\n    result['balance_advance_ratio'] = ...\n    return result",
     },
     "TYPES": {
-        "title": "Add type annotations — enforce with mypy strict mode",
+        "title":  "Add type annotations — enforce with mypy strict mode",
         "detail": (
             "Missing type annotations allow type errors to reach production silently. "
             "In a SageMaker ML pipeline, a mismatched DataFrame column type or wrong "
@@ -114,26 +127,26 @@ SEVERITY_OVERRIDE = {
 
 MANUAL_FINDINGS = [
     {
-        "test_id": "CUSTOM-001",
-        "test_name": "silent_dataframe_mutation",
+        "test_id":    "CUSTOM-001",
+        "test_name":  "silent_dataframe_mutation",
         "issue_text": "In-place DataFrame mutation — modifies caller data silently",
-        "severity": "MEDIUM",
+        "severity":   "MEDIUM",
         "confidence": "HIGH",
-        "cwe": "N/A",
+        "cwe":        "N/A",
         "line_number": 37,
-        "code": "df['balance_advance_ratio'] = df['account_balance'] / df['advance_amount']",
-        "rec_key": "MUTATION",
+        "code":       "df['balance_advance_ratio'] = df['account_balance'] / df['advance_amount']",
+        "rec_key":    "MUTATION",
     },
     {
-        "test_id": "CUSTOM-002",
-        "test_name": "missing_type_annotations",
+        "test_id":    "CUSTOM-002",
+        "test_name":  "missing_type_annotations",
         "issue_text": "Missing type annotations — mypy strict mode fails",
-        "severity": "LOW",
+        "severity":   "LOW",
         "confidence": "HIGH",
-        "cwe": "N/A",
+        "cwe":        "N/A",
         "line_number": 1,
-        "code": "def load_data(filepath):          # no type annotations\ndef apply_transformation(df, transform_expr):  # no type annotations\ndef engineer_features(df, extra_transform=None):  # no type annotations",
-        "rec_key": "TYPES",
+        "code":       "def load_data(filepath):          # no type annotations\ndef apply_transformation(df, transform_expr):  # no type annotations\ndef engineer_features(df, extra_transform=None):  # no type annotations",
+        "rec_key":    "TYPES",
     },
 ]
 
@@ -142,8 +155,7 @@ def run_bandit(filepath: Path) -> list:
     """Run bandit and return list of finding dicts."""
     result = subprocess.run(
         [sys.executable, "-m", "bandit", "-f", "json", str(filepath)],
-        capture_output=True,
-        text=True,
+        capture_output=True, text=True
     )
     try:
         data = json.loads(result.stdout)
@@ -155,7 +167,8 @@ def run_bandit(filepath: Path) -> list:
 def run_flake8(filepath: Path) -> list:
     """Run flake8 and return list of finding strings."""
     result = subprocess.run(
-        [sys.executable, "-m", "flake8", str(filepath)], capture_output=True, text=True
+        [sys.executable, "-m", "flake8", str(filepath)],
+        capture_output=True, text=True
     )
     return result.stdout.strip().splitlines() if result.stdout.strip() else []
 
@@ -164,31 +177,24 @@ def severity_badge(severity: str) -> str:
     color = SEVERITY_COLOR.get(severity.upper(), "#8890A0")
     return (
         f'<span style="background:{color}22;color:{color};border:1px solid {color}44;'
-        f"padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;"
+        f'padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;'
         f'font-family:monospace;letter-spacing:0.5px;">{severity.upper()}</span>'
     )
 
 
 def finding_card(finding: dict, idx: int, rec: dict | None) -> str:
-    severity = SEVERITY_OVERRIDE.get(
+    severity  = SEVERITY_OVERRIDE.get(
         finding.get("test_id", ""),
-        finding.get("issue_severity", finding.get("severity", "MEDIUM")),
+        finding.get("issue_severity", finding.get("severity", "MEDIUM"))
     ).upper()
-    test_id = finding.get("test_id", "")
+    test_id   = finding.get("test_id", "")
     test_name = finding.get("test_name", finding.get("issue_text", ""))
-    issue = finding.get("issue_text", test_name)
-    line = finding.get(
-        "line_number",
-        (
-            finding.get("line_range", ["?"])[0]
-            if isinstance(finding.get("line_range"), list)
-            else "?"
-        ),
-    )
-    code = finding.get("code", "").strip()
-    cwe = finding.get("issue_cwe", finding.get("cwe", {}))
+    issue     = finding.get("issue_text", test_name)
+    line      = finding.get("line_number", finding.get("line_range", ["?"])[0] if isinstance(finding.get("line_range"), list) else "?")
+    code      = finding.get("code", "").strip()
+    cwe       = finding.get("issue_cwe", finding.get("cwe", {}))
     if isinstance(cwe, dict):
-        cwe_id = cwe.get("id", "")
+        cwe_id  = cwe.get("id", "")
         cwe_str = f"CWE-{cwe_id}" if cwe_id else "N/A"
     else:
         cwe_str = str(cwe) if cwe and cwe != "N/A" else "N/A"
@@ -226,29 +232,25 @@ def finding_card(finding: dict, idx: int, rec: dict | None) -> str:
     </div>"""
 
 
-def build_html(
-    bad_findings: list, good_findings: list, flake8_bad: list, logo_b64: str = ""
-) -> str:
-    now = datetime.now().strftime("%B %d, %Y at %I:%M %p")
-    all_bad = sorted(
+def build_html(bad_findings: list, good_findings: list, flake8_bad: list, logo_b64: str = "") -> str:
+    now       = datetime.now().strftime("%B %d, %Y at %I:%M %p")
+    all_bad   = sorted(
         bad_findings + MANUAL_FINDINGS,
         key=lambda f: SEVERITY_RANK.get(
-            SEVERITY_OVERRIDE.get(
-                f.get("test_id", ""), f.get("issue_severity", f.get("severity", "LOW"))
-            ).upper(),
-            4,
-        ),
+            SEVERITY_OVERRIDE.get(f.get("test_id",""),
+            f.get("issue_severity", f.get("severity","LOW"))).upper(), 4)
     )
 
     def effective_severity(f: dict) -> str:
         return SEVERITY_OVERRIDE.get(
-            f.get("test_id", ""), f.get("issue_severity", f.get("severity", "LOW"))
+            f.get("test_id", ""),
+            f.get("issue_severity", f.get("severity", "LOW"))
         ).upper()
 
-    total = len(all_bad)
-    critical = sum(1 for f in all_bad if effective_severity(f) in ("CRITICAL", "HIGH"))
-    medium = sum(1 for f in all_bad if effective_severity(f) == "MEDIUM")
-    low = sum(1 for f in all_bad if effective_severity(f) == "LOW")
+    total     = len(all_bad)
+    critical  = sum(1 for f in all_bad if effective_severity(f) in ("CRITICAL", "HIGH"))
+    medium    = sum(1 for f in all_bad if effective_severity(f) == "MEDIUM")
+    low       = sum(1 for f in all_bad if effective_severity(f) == "LOW")
 
     risk_score = max(0, 100 - (critical * 20) - (medium * 5) - (low * 2))
 
@@ -256,11 +258,11 @@ def build_html(
     for i, f in enumerate(all_bad):
         test_id = f.get("test_id", "")
         rec_key = f.get("rec_key", test_id)
-        rec = RECOMMENDATIONS.get(rec_key)
+        rec     = RECOMMENDATIONS.get(rec_key)
         cards_html += finding_card(f, i, rec)
 
     good_status = "PASS" if not good_findings else "FAIL"
-    good_color = "#00E676" if good_status == "PASS" else "#FF4560"
+    good_color  = "#00E676" if good_status == "PASS" else "#FF4560"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
